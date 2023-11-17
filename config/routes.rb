@@ -7,4 +7,10 @@ Rails.application.routes.draw do
 
   # Defines the root path route ("/")
   # root "posts#index"
+
+  resources :contracts do
+    collection do
+      post :archive
+    end
+  end
 end
