@@ -1,4 +1,5 @@
 require 'csv'
+require 'tempfile'
 
 class ContractArchiveJob < ApplicationJob
   queue_as :default
@@ -23,6 +24,12 @@ class ContractArchiveJob < ApplicationJob
   private
 
   def generate_failure_csv(failed_rows)
-     # implement later
+    Tempfile.create(['failed_contracts', '.csv']) do |tempfile|
+      CSV.open(tempfile.path, 'w') do |csv|
+        csv << ['Row', 'Contract Number', 'Archive Number', 'Failure Reason']
+        failed_rows.each { |row| csv << row }
+      end
+      return tempfile.path
+    end
   end
 end

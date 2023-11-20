@@ -28,8 +28,12 @@ class ContractsController < ApplicationController
   end
 
   def archive
-    ContractArchiveJob.perform_later(params[:file].path)
-    head :ok
+    file_path = ContractArchiveJob.perform_now(params[:file_path])
+    if file_path
+      send_file file_path, type: 'text/csv', disposition: 'attachment', filename: 'failed_contracts.csv'
+    else
+      head :ok
+    end
   end
 
   private
